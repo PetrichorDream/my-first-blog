@@ -1,13 +1,7 @@
 from django.shortcuts import render
-from .forms import StudentForm
+from django.utils import timezone
+from .models import Post
 
-def student_form_view(request):
-    if request.method == 'POST':
-        form = StudentForm(request.POST)
-        if form.is_valid():
-            data = form.cleaned_data
-            return render(request, 'blog/results.html', {'data': data})
-    else:
-        form = StudentForm()
-    
-    return render(request, 'blog/form.html', {'form': form})
+def post_list(request):
+    posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
+    return render(request, 'blog/post_list.html', {'posts': posts})
